@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import axios from "axios";
-// eslint-disable-next-line
 import { Table } from "react-bootstrap";
+import { get, orderBy } from "lodash";
 import PropTypes from "prop-types";
 
 const BASE_URL = "https://soccer.sportmonks.com/api/v2.0/";
@@ -9,7 +9,8 @@ const TOKEN = "api_token=HOLCAStI6Z0OfdoPbjdSg5b41Q17w2W5P4WuoIBdC66Z54kUEvGWPIe
 
 class LeagueTable extends Component {
     state = {
-        apiData: []
+        apiData: [],
+        ascend: false
     };
     componentDidMount() {
         axios.get(`${BASE_URL}standings/season/825?${TOKEN}`).then(response => {
@@ -17,9 +18,21 @@ class LeagueTable extends Component {
         });
     }
 
-    handleSort(event, key) {
-        const tempData = this.state.apiData.sort((a, b) => a[key] - b[key]);
-        this.setState({ tempData });
+    handleSort(key) {
+        const { apiData, ascend } = this.state;
+        let orderedData;
+        if (key === "total.goal_difference") {
+            orderedData = apiData.sort((a, b) => {
+                if (ascend) {
+                    return get(b, key) - get(a, key);
+                }
+                return get(a, key) - get(b, key);
+            });
+        } else {
+            const order = ascend ? "asc" : "desc";
+            orderedData = orderBy(apiData, key, order);
+        }
+        this.setState({ apiData: orderedData, ascend: !ascend });
     }
 
     render() {
@@ -28,14 +41,14 @@ class LeagueTable extends Component {
             <Table striped hover>
                 <thead className="thead-dark">
                     <tr>
-                        <th onClick={e => this.handleSort(e, "position")}>Position</th>
-                        <th>Team Name</th>
-                        <th>Played</th>
-                        <th>Won</th>
-                        <th>Drawn</th>
-                        <th>Lost</th>
-                        <th>Goal</th>
-                        <th>Difference</th>
+                        <th onClick={e => this.handleSort("position")}>Position</th>
+                        <th onClick={e => this.handleSort("team_name")}>Team Name</th>
+                        <th onClick={e => this.handleSort("overall.games_played")}>Played</th>
+                        <th onClick={e => this.handleSort("overall.won")}>Won</th>
+                        <th onClick={e => this.handleSort("overall.draw")}>Drawn</th>
+                        <th onClick={e => this.handleSort("overall.lost")}>Lost</th>
+                        <th onClick={e => this.handleSort("overall.goals_scored")}>Goal</th>
+                        <th onClick={e => this.handleSort("total.goal_difference")}>Difference</th>
                         <th onClick={e => this.handleSort(e, "points")}>Points</th>
                     </tr>
                 </thead>
