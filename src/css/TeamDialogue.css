@@ -1,4 +1,3 @@
-.player-list {
-    overflow-y: auto;
-    height: 220px;
+.modal-buttons {
+    float: right;
 }

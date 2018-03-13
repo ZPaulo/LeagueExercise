@@ -1,0 +1,9 @@
+.player-list {
+    overflow-y: auto;
+    height: 220px;
+}
+
+.injured-icon {
+    float: right;
+    color: red;
+}

@@ -1,71 +1,133 @@
 import React, { Component } from "react";
-import { Modal, Button, ListGroup, ListGroupItem } from "react-bootstrap";
+import { Modal, Button, ButtonToolbar } from "react-bootstrap";
 import axios from "axios";
 import PropTypes from "prop-types";
+import TeamBody from "./TeamBody";
+import PlayerBody from "./PlayerBody";
 import "../css/TeamDialogue.css";
 
 class TeamDialogue extends Component {
     state = {
+        teamLogo: "",
         teamName: "",
-        teamImg: "",
-        players: []
+        players: [],
+        title: "",
+        logo: "",
+        playerId: 0,
+        teams: []
     };
 
     componentWillReceiveProps(nextProps) {
         if (this.props.teamId !== nextProps.teamId) {
-            axios
-                .get(
-                    `${nextProps.url}teams/${nextProps.teamId}?${
-                        nextProps.token
-                    }&include=squad.player`
-                )
-                .then(response => {
-                    this.setState({
-                        players: response.data.data.squad.data,
-                        teamName: response.data.data.name,
-                        teamImg: response.data.data.logo_path
-                    });
+            const index = this.state.teams.findIndex(elem => elem.id === nextProps.teamId);
+            if (index > -1) {
+                this.setState({
+                    players: this.state.teams[index].squad.data,
+                    teamName: this.state.teams[index].name,
+                    title: this.state.teams[index].name,
+                    teamLogo: this.state.teams[index].logo_path,
+                    logo: this.state.teams[index].logo_path
                 });
+            } else {
+                this.reset();
+                axios
+                    .get(
+                        `${nextProps.url}teams/${nextProps.teamId}?${
+                            nextProps.token
+                        }&include=squad.player.position`
+                    )
+                    .then(response => {
+                        this.setState({
+                            players: response.data.data.squad.data,
+                            teamName: response.data.data.name,
+                            title: response.data.data.name,
+                            teamLogo: response.data.data.logo_path,
+                            logo: response.data.data.logo_path,
+                            teams: [...this.state.teams, response.data.data]
+                        });
+                    });
+            }
         }
     }
 
+    handleClick(id, title, logo) {
+        this.setState({ title, logo, playerId: id });
+    }
+
+    handleBack() {
+        this.setState({
+            title: this.state.teamName,
+            logo: this.state.teamLogo,
+            playerId: 0
+        });
+    }
+
+    reset() {
+        this.setState({
+            teamLogo: "",
+            teamName: "",
+            players: [],
+            title: "",
+            logo: "",
+            playerId: 0
+        });
+    }
+
+    handleClose() {
+        this.props.handleClose();
+    }
+
     render() {
-        let playerItems;
+        let backButton = "";
+        let listComponent;
         if (this.state.players.length > 0) {
-            playerItems = this.state.players.map(playerInfo => (
-                <ListGroupItem key={playerInfo.player_id}>
-                    {playerInfo.player.data.common_name}{" "}
-                </ListGroupItem>
-            ));
+            if (this.state.playerId > 0) {
+                const index = this.state.players.findIndex(
+                    elem => elem.player_id === this.state.playerId
+                );
+                listComponent = <PlayerBody player={this.state.players[index]} />;
+
+                backButton = (
+                    <Button bsStyle="primary" onClick={() => this.handleBack()}>
+                        Back
+                    </Button>
+                );
+            } else {
+                listComponent = (
+                    <TeamBody
+                        players={this.state.players}
+                        handleClick={(id, title, logo) => this.handleClick(id, title, logo)}
+                    />
+                );
+            }
         }
+
         return (
-            <Modal show={this.props.show} onHide={this.props.handleClose}>
+            <Modal show={this.props.show} onHide={() => this.handleClose()}>
                 <Modal.Header>
-                    <Modal.Title>{this.state.teamName}</Modal.Title>
+                    <Modal.Title>{this.state.title}</Modal.Title>
                 </Modal.Header>
 
                 <Modal.Body>
                     <div className="row">
-                        <div className="col-md-4 text-center">
+                        <div className="col-md-4">
                             <span className="float-md-left">
                                 <figure className="center-block">
-                                    <img
-                                        src={this.state.teamImg}
-                                        alt={`Logo for ${this.state.teamImg}`}
-                                    />
+                                    <img src={this.state.logo} alt={`Logo for team`} />
                                 </figure>
                             </span>
                         </div>
                         <div className="col-md-8">
-                            <span className="float-md-right">
-                                <ListGroup className="player-list">{playerItems}</ListGroup>
-                            </span>
+                            <span className="float-md-right">{listComponent}</span>
                         </div>
                     </div>
                 </Modal.Body>
 
                 <Modal.Footer>
-                    <Button onClick={this.props.handleClose}>Close</Button>
+                    <ButtonToolbar className="modal-buttons">
+                        {backButton}
+                        <Button onClick={this.props.handleClose}>Close</Button>
+                    </ButtonToolbar>
                 </Modal.Footer>
             </Modal>
         );

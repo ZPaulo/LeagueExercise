@@ -1,0 +1,7 @@
+.sorting-icon {
+    cursor: pointer;
+}
+
+.active-icon {
+    background-color: lightgray;
+}

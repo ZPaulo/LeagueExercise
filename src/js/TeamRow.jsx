@@ -1,6 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
 
+/* eslint camelcase: 0 */
+
 const TeamRow = props => {
     const { position, team_name, overall, total, points } = props.team;
     const { games_played, won, draw, lost, goals_scored } = overall;

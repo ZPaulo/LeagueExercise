@@ -4,6 +4,7 @@ import { Table } from "react-bootstrap";
 import { get, orderBy } from "lodash";
 import TeamRow from "./TeamRow";
 import TeamDialogue from "./TeamDialogue";
+import TableHead from "./TableHead";
 
 const BASE_URL = "https://soccer.sportmonks.com/api/v2.0/";
 const TOKEN = "api_token=HOLCAStI6Z0OfdoPbjdSg5b41Q17w2W5P4WuoIBdC66Z54kUEvGWPIe33UYC";
@@ -57,23 +58,8 @@ class LeagueTable extends Component {
         ));
         return (
             <div>
-                <pre>{JSON.stringify(this.state.apiTeam, null, 4)}</pre>
                 <Table striped hover>
-                    <thead className="thead-dark">
-                        <tr>
-                            <th onClick={() => this.handleSort("position")}>Position</th>
-                            <th onClick={() => this.handleSort("team_name")}>Team Name</th>
-                            <th onClick={() => this.handleSort("overall.games_played")}>Played</th>
-                            <th onClick={() => this.handleSort("overall.won")}>Won</th>
-                            <th onClick={() => this.handleSort("overall.draw")}>Drawn</th>
-                            <th onClick={() => this.handleSort("overall.lost")}>Lost</th>
-                            <th onClick={() => this.handleSort("overall.goals_scored")}>Goal</th>
-                            <th onClick={() => this.handleSort("total.goal_difference")}>
-                                Difference
-                            </th>
-                            <th onClick={() => this.handleSort("points")}>Points</th>
-                        </tr>
-                    </thead>
+                    <TableHead handleSort={elem => this.handleSort(elem)} />
                     <tbody>{rows}</tbody>
                 </Table>
                 <TeamDialogue
