@@ -13,7 +13,7 @@ class LeagueTable extends Component {
         apiData: [],
         ascend: false,
         show: false,
-        apiTeam: {}
+        teamId: 0
     };
     componentDidMount() {
         axios.get(`${BASE_URL}standings/season/825?${TOKEN}`).then(response => {
@@ -23,10 +23,7 @@ class LeagueTable extends Component {
 
     handleShowModal(e, teamId) {
         e.preventDefault();
-        axios.get(`${BASE_URL}teams/${teamId}?${TOKEN}&include=squad`).then(response => {
-            this.setState({ apiTeam: response.data });
-        });
-        this.setState({ show: true });
+        this.setState({ show: true, teamId });
     }
 
     handleCloseModal() {
@@ -55,7 +52,7 @@ class LeagueTable extends Component {
             <TeamRow
                 key={team.team_id}
                 handleClick={e => this.handleShowModal(e, team.team_id)}
-                {...team}
+                team={team}
             />
         ));
         return (
@@ -79,7 +76,13 @@ class LeagueTable extends Component {
                     </thead>
                     <tbody>{rows}</tbody>
                 </Table>
-                <TeamDialogue show={this.state.show} handleClose={() => this.handleCloseModal()} />
+                <TeamDialogue
+                    show={this.state.show}
+                    handleClose={() => this.handleCloseModal()}
+                    teamId={this.state.teamId}
+                    url={BASE_URL}
+                    token={TOKEN}
+                />
             </div>
         );
     }
