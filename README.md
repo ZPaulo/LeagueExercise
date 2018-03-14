@@ -13,6 +13,7 @@ Below you will find some information on how to perform common tasks.<br>
     *   [npm start](#npm-start)
     *   [npm test](#npm-test)
     *   [npm run build](#npm-run-build)
+    *   [npm run serve](#npm-run-serve)
 *   [Deployment](#deployment)
     *   [Static Server](#static-server)
 
@@ -48,6 +49,10 @@ The build is minified and the filenames include the hashes.<br>
 
 See the section about [deployment](#deployment) for more information.
 
+### `npm run serve`
+
+Runs the app from a static server
+
 ## Deployment
 
 `npm run build` creates a `build` directory with a production build of the app. Set up your favorite HTTP server so that a visitor to your site is served `index.html`, and requests to static paths like `/static/js/main.<hash>.js` are served with the contents of the `/static/js/main.<hash>.js` file.
@@ -61,4 +66,4 @@ npm install -g serve
 serve -s build
 ```
 
-The last command shown above will serve your static site on the port **5000**. Like many of [serve](https://github.com/zeit/serve)’s internal settings, the port can be adjusted using the `-p` or `--port` flags.
+The last command shown above will serve the app on the port **5000**. Like many of [serve](https://github.com/zeit/serve)’s internal settings, the port can be adjusted using the `-p` or `--port` flags.
