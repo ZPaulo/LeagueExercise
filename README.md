@@ -1,4 +1,4 @@
-#My League App
+# My League App
 
 A simple RESTfull app built using React and Bootstrap
 
@@ -8,7 +8,7 @@ Below you will find some information on how to perform common tasks.<br>
 
 ## Table of Contents
 
-*   [Folder Structure](#folder-structure)
+*   [Prerequisites](#Prerequisites)
 *   [Available Scripts](#available-scripts)
     *   [npm start](#npm-start)
     *   [npm test](#npm-test)
@@ -16,32 +16,11 @@ Below you will find some information on how to perform common tasks.<br>
 *   [Deployment](#deployment)
     *   [Static Server](#static-server)
 
-##Prerequisites
+## Prerequisites
 
 *   Have [node.js](https://nodejs.org/en/) 6+ and NPM installed
-*   Clone repository [https://github.com/ZPaulo/LeagueExercise.git]
+*   Clone repository https://github.com/ZPaulo/LeagueExercise.git
 *   Navigate into project and do npm install
-
-## Folder Structure
-
-After cloning, the project should look like this:
-
-```
-my-league/
-  README.md
-  node_modules/
-  package.json
-  public/
-    index.html
-    favicon.ico
-  src/
-    css/
-    js/
-    App.js
-    index.js
-```
-
-All the styling of the project can be found in the css/ folder. Likewise, the Components used can be found in the js/ folder
 
 ## Available Scripts
 
