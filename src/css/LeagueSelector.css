@@ -3,6 +3,10 @@
     justify-content: flex-start;
 }
 
+.dropdown-container > .dropdown > .league-dropdown {
+    margin-left: 5px;
+}
+
 .dropdown-menu > .league-dropdown-item > a {
     display: flex;
 }
