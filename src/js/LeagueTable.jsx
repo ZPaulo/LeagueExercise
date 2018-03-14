@@ -13,16 +13,18 @@ class LeagueTable extends Component {
         ascend: false,
         show: false,
         teamId: 0,
-        loading: true
+        loading: false,
+        selected: false,
+        reset: false
     };
 
     componentWillReceiveProps(nextProps) {
         if (
-            (this.props.season !== nextProps.season || this.props.stage !== nextProps.stage) &&
+            this.props.stage !== nextProps.stage &&
             nextProps.season !== 0 &&
             nextProps.stage !== -1
         ) {
-            this.setState({ loading: true });
+            this.setState({ loading: true, selected: true, reset: true });
             axios
                 .get(`${nextProps.url}standings/season/${nextProps.season}?${nextProps.token}`)
                 .then(response => {
@@ -39,7 +41,8 @@ class LeagueTable extends Component {
                         });
                     }
                     this.setState({
-                        loading: false
+                        loading: false,
+                        reset: false
                     });
                 });
         }
@@ -74,24 +77,29 @@ class LeagueTable extends Component {
     render() {
         let rows;
         let error = "";
-        if (this.state.loading) {
-            error = <h3>Loading...</h3>;
-        } else if (this.state.apiData.length > 0) {
-            rows = this.state.apiData.map(elem => (
-                <TeamRow
-                    key={elem.team_id}
-                    handleClick={e => this.handleShowModal(e, elem.team_id)}
-                    team={elem}
-                />
-            ));
-        } else {
-            error = <h3>No data available</h3>;
+        if (this.state.selected) {
+            if (this.state.loading) {
+                error = <h3>Loading...</h3>;
+            } else if (this.state.apiData.length > 0) {
+                rows = this.state.apiData.map(elem => (
+                    <TeamRow
+                        key={elem.team_id}
+                        handleClick={e => this.handleShowModal(e, elem.team_id)}
+                        team={elem}
+                    />
+                ));
+            } else {
+                error = <h3>No data available</h3>;
+            }
         }
         return (
             <div>
                 {error}
                 <Table striped hover>
-                    <TableHead handleSort={elem => this.handleSort(elem)} />
+                    <TableHead
+                        reset={this.state.reset}
+                        handleSort={elem => this.handleSort(elem)}
+                    />
                     <tbody>{rows}</tbody>
                 </Table>
                 <TeamDialogue

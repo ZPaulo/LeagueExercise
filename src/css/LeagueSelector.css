@@ -1,0 +1,16 @@
+.dropdown-menu > .league-dropdown-item {
+    display: flex;
+    justify-content: flex-start;
+}
+
+.dropdown-menu > .league-dropdown-item > a {
+    display: flex;
+}
+
+.league-dropdown-item > a > p {
+    flex: 5;
+}
+
+.flag-svg {
+    flex: 2;
+}

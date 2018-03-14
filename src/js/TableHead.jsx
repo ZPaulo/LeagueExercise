@@ -9,6 +9,12 @@ class TableHead extends Component {
         ascend: true
     };
 
+    componentWillReceiveProps(nextProps) {
+        if (this.props.reset !== nextProps.reset && nextProps.reset) {
+            this.setState({ activeElem: 0 });
+        }
+    }
+
     handleClick(id, key) {
         this.setState({ activeElem: id, ascend: !this.state.ascend });
         this.props.handleSort(key, !this.state.ascend);
@@ -66,7 +72,8 @@ class TableHead extends Component {
 }
 
 TableHead.propTypes = {
-    handleSort: PropTypes.func.isRequired
+    handleSort: PropTypes.func.isRequired,
+    reset: PropTypes.bool.isRequired
 };
 
 export default TableHead;

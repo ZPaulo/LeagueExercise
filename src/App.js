@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import axios from "axios";
 import LeagueTable from "./js/LeagueTable";
 import LeagueSelector from "./js/LeagueSelector";
+import "./css/App.css";
 
 const BASE_URL = "https://soccer.sportmonks.com/api/v2.0/";
 const TOKEN = "api_token=HOLCAStI6Z0OfdoPbjdSg5b41Q17w2W5P4WuoIBdC66Z54kUEvGWPIe33UYC";
@@ -30,12 +31,13 @@ class App extends Component {
             leagueName,
             season: -1,
             seasonName: "Seasons",
-            stageName: "Stages"
+            stageName: "Stages",
+            stage: -1
         });
     }
 
     handleSelectedSeason(season, seasonName) {
-        this.setState({ season, seasonName, stageName: "Stages" });
+        this.setState({ season, seasonName, stage: -1, stageName: "Stages" });
     }
 
     handleSelectedStage(stage, stageName) {
@@ -52,10 +54,10 @@ class App extends Component {
                     data={this.state.apiData}
                     handleSelect={(e, id, name) => this.handleSelectedLeague(e, name)}
                     title={this.state.leagueName}
+                    type="leagues"
                 />
             );
 
-            console.log(this.state.league);
             if (this.state.league > -1) {
                 seasonSelector = (
                     <LeagueSelector
@@ -86,16 +88,26 @@ class App extends Component {
         }
 
         return (
-            <div>
-                {leagueSelector}
-                {seasonSelector}
-                {stageSelector}
-                <LeagueTable
-                    url={BASE_URL}
-                    token={TOKEN}
-                    season={this.state.season}
-                    stage={this.state.stage}
-                />
+            <div className="my-league-conatainer">
+                <div className="row">
+                    <div className="col-md-12">
+                        <span className="dropdown-container">
+                            {leagueSelector}
+                            {seasonSelector}
+                            {stageSelector}
+                        </span>
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="col-md-12">
+                        <LeagueTable
+                            url={BASE_URL}
+                            token={TOKEN}
+                            season={this.state.season}
+                            stage={this.state.stage}
+                        />
+                    </div>
+                </div>
             </div>
         );
     }
