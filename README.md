@@ -1,6 +1,15 @@
 # My League App
 
-A simple RESTfull app built using React and Bootstrap
+A simple App that pulls data from a RESTfull API. Built using React and Bootstrap.
+
+The application displays the list of teams for the given season. Users can:
+
+*   Select from available leagues
+*   Select from available seasons within leagues
+*   Select from available stages within seasons
+*   Sort the outputted table by any column, ascending or descending
+*   Click on a team name to display the players and logo of that team
+*   Click on a player to display that player's profile
 
 This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).
 
