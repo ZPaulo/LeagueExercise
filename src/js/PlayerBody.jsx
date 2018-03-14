@@ -52,8 +52,8 @@ PlayerBody.propTypes = {
                 fullname: PropTypes.string.isRequired,
                 nationality: PropTypes.string.isRequired,
                 birthdate: PropTypes.string.isRequired,
-                height: PropTypes.string.isRequired,
-                weight: PropTypes.string.isRequired,
+                height: PropTypes.string,
+                weight: PropTypes.string,
                 position: PropTypes.shape({
                     data: PropTypes.shape({
                         name: PropTypes.string.isRequired

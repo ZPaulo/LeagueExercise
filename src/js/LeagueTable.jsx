@@ -2,24 +2,47 @@ import React, { Component } from "react";
 import axios from "axios";
 import { Table } from "react-bootstrap";
 import { get, orderBy } from "lodash";
+import PropTypes from "prop-types";
 import TeamRow from "./TeamRow";
 import TeamDialogue from "./TeamDialogue";
 import TableHead from "./TableHead";
-
-const BASE_URL = "https://soccer.sportmonks.com/api/v2.0/";
-const TOKEN = "api_token=HOLCAStI6Z0OfdoPbjdSg5b41Q17w2W5P4WuoIBdC66Z54kUEvGWPIe33UYC";
 
 class LeagueTable extends Component {
     state = {
         apiData: [],
         ascend: false,
         show: false,
-        teamId: 0
+        teamId: 0,
+        loading: true
     };
-    componentDidMount() {
-        axios.get(`${BASE_URL}standings/season/825?${TOKEN}`).then(response => {
-            this.setState({ apiData: response.data.data[0].standings.data });
-        });
+
+    componentWillReceiveProps(nextProps) {
+        if (
+            (this.props.season !== nextProps.season || this.props.stage !== nextProps.stage) &&
+            nextProps.season !== 0 &&
+            nextProps.stage !== -1
+        ) {
+            this.setState({ loading: true });
+            axios
+                .get(`${nextProps.url}standings/season/${nextProps.season}?${nextProps.token}`)
+                .then(response => {
+                    const stageIndex = response.data.data.findIndex(
+                        elem => elem.stage_id === nextProps.stage
+                    );
+                    if (stageIndex > -1) {
+                        this.setState({
+                            apiData: response.data.data[stageIndex].standings.data
+                        });
+                    } else {
+                        this.setState({
+                            apiData: []
+                        });
+                    }
+                    this.setState({
+                        loading: false
+                    });
+                });
+        }
     }
 
     handleShowModal(e, teamId) {
@@ -49,15 +72,24 @@ class LeagueTable extends Component {
     }
 
     render() {
-        const rows = this.state.apiData.map(team => (
-            <TeamRow
-                key={team.team_id}
-                handleClick={e => this.handleShowModal(e, team.team_id)}
-                team={team}
-            />
-        ));
+        let rows;
+        let error = "";
+        if (this.state.loading) {
+            error = <h3>Loading...</h3>;
+        } else if (this.state.apiData.length > 0) {
+            rows = this.state.apiData.map(elem => (
+                <TeamRow
+                    key={elem.team_id}
+                    handleClick={e => this.handleShowModal(e, elem.team_id)}
+                    team={elem}
+                />
+            ));
+        } else {
+            error = <h3>No data available</h3>;
+        }
         return (
             <div>
+                {error}
                 <Table striped hover>
                     <TableHead handleSort={elem => this.handleSort(elem)} />
                     <tbody>{rows}</tbody>
@@ -66,12 +98,19 @@ class LeagueTable extends Component {
                     show={this.state.show}
                     handleClose={() => this.handleCloseModal()}
                     teamId={this.state.teamId}
-                    url={BASE_URL}
-                    token={TOKEN}
+                    url={this.props.url}
+                    token={this.props.token}
                 />
             </div>
         );
     }
 }
+
+LeagueTable.propTypes = {
+    url: PropTypes.string.isRequired,
+    token: PropTypes.string.isRequired,
+    season: PropTypes.number.isRequired,
+    stage: PropTypes.number.isRequired
+};
 
 export default LeagueTable;

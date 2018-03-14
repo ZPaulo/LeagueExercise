@@ -19,6 +19,7 @@ class TeamDialogue extends Component {
 
     componentWillReceiveProps(nextProps) {
         if (this.props.teamId !== nextProps.teamId) {
+            this.reset();
             const index = this.state.teams.findIndex(elem => elem.id === nextProps.teamId);
             if (index > -1) {
                 this.setState({
@@ -29,7 +30,6 @@ class TeamDialogue extends Component {
                     logo: this.state.teams[index].logo_path
                 });
             } else {
-                this.reset();
                 axios
                     .get(
                         `${nextProps.url}teams/${nextProps.teamId}?${
@@ -73,10 +73,6 @@ class TeamDialogue extends Component {
         });
     }
 
-    handleClose() {
-        this.props.handleClose();
-    }
-
     render() {
         let backButton = "";
         let listComponent;
@@ -103,7 +99,7 @@ class TeamDialogue extends Component {
         }
 
         return (
-            <Modal show={this.props.show} onHide={() => this.handleClose()}>
+            <Modal show={this.props.show} onHide={this.props.handleClose}>
                 <Modal.Header>
                     <Modal.Title>{this.state.title}</Modal.Title>
                 </Modal.Header>
